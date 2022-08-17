@@ -8,16 +8,16 @@ jobs:
     steps:
       - checkout
       - run: 
-           name: cd frontend
-           command: 'npm install npm run build'
+           name: frontend
+           command: 'npm install FE'
   build-backend:
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
       - run: 
-           name: cd backend
-           command: 'npm install npm run build'
+           name: backend
+           command: 'npm install BE'
   
   test-frontend:
     docker:
