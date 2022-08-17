@@ -12,12 +12,12 @@ jobs:
              npm run build
   build-backend:
     docker:
-      - image: cimg/<language>:Node.js 18.7.0
+      - image: circleci/node:18.7.0
     steps:
       - checkout
-      - run: cd backend
-             npm install
-             npm run build
+      - run: echo "backend"
+             echo "npm install"
+             echo "npm run build"
 
 # Orchestrate our job run sequence
 workflows:
