@@ -1,5 +1,4 @@
 version: 2.1
-
 # Define the jobs we want to run for this project
 jobs:
   build-frontend:
@@ -36,9 +35,8 @@ jobs:
       - run: 
            name: Run backend test
            command: 'npm test BE'
-
 workflows:
-  build_and_fb:
+  build_fb:
     jobs:
       - build-frontend
       - build-backend
