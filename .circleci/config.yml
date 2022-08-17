@@ -7,13 +7,17 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: cd frontend npm install npm run build
+      - run: 
+           name: cd frontend
+           command: 'npm install npm run build'
   build-backend:
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
-      - run: cd backend npm install npm run build
+      - run: 
+           name: cd backend
+           command: 'npm install npm run build'
   
   test-frontend:
     docker:
@@ -22,7 +26,7 @@ jobs:
       - checkout
       - run: 
            name: Run frontend test
-           command: '312'
+           command: 'npm test FE'
 
   test-backend:
     docker:
@@ -31,7 +35,7 @@ jobs:
       - checkout
       - run: 
            name: Run backend test
-           command: '123'
+           command: 'npm test BE'
 
 workflows:
   build_and_fb:
