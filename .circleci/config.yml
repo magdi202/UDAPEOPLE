@@ -15,10 +15,8 @@ jobs:
       - image: circleci/node:18.7.0
     steps:
       - checkout
-      - run: echo "backend"
-             echo "npm install"
-             echo "npm run build"
-
+      - run: cd frontend npm install npm run build
+      
 # Orchestrate our job run sequence
 workflows:
   build_and_fb:
