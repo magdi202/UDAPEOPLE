@@ -8,7 +8,6 @@ jobs:
     steps:
       - checkout
       - run: cd frontend npm install npm run build
-
   build-backend:
     docker:
       - image: circleci/node:13.8.0
