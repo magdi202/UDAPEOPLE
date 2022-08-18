@@ -16,7 +16,7 @@ jobs:
       - checkout 
       - run: 
            name: backend
-           command: npm install BE
+           command: npm install backend
   test-frontend:
     docker:
       - image: circleci/node:10.16.3
