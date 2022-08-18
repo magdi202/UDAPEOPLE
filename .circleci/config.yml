@@ -1,9 +1,9 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-   build-cloudfront:
+   deploy-infrastructure:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run: 
@@ -16,4 +16,4 @@ jobs:
 workflows:
   cloud-front:
     jobs:
-      - build-cloudfront
+      - deploy-infrastructure
