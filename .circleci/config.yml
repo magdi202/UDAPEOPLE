@@ -16,4 +16,4 @@ jobs:
 workflows:
   cloud-front:
     jobs:
-      - create_and_deploy_front_end
+      - create_and_deploy_front_end 
