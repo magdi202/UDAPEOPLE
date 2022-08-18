@@ -1,24 +1,19 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-   smoke_test:
+   cloudfront-update:
     docker:
-      - image: alpine:latest
+      - image: amazon/aws-cli
     steps:
-      - run: apk add --update curl
-      - run:
-          name: smoke test
+      - run: 
+          name: create cloudfront
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees" 
-            echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
-            then
-            # Change this to 0 after the job fails
-            return 1
-            else
-            return 1
-            fi
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
 workflows:
   cloud-front:
     jobs:
-      - smoke_test
+      - cloudfront-update
