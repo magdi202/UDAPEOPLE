@@ -7,9 +7,9 @@ jobs:
     steps:
       - run: 
           name: create cloudfront
-          command: |
-            aws cloudformation deploy \
-            --template-file .circleci/files/cloudfront.yml \
+          command: 
+            cd .circleci/files/
+            --template-file cloudfront.yml \
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
