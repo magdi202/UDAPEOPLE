@@ -23,7 +23,7 @@ jobs:
     steps:
       - checkout
       - run: 
-           name: frontend test
+           name: frontend
            command: npm run test
   test-backend:
     docker:
@@ -31,7 +31,7 @@ jobs:
     steps:
       - checkout
       - run: 
-           name: backend test
+           name: backend
            command: npm run test
 workflows:
   build_fb:
