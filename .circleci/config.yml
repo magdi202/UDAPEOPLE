@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run: 
            name: frontend test
-           command: npm FE test
+           command: npm test FE
   test-backend:
     docker:
       - image: circleci/node:10.16.3
