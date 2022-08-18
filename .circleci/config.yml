@@ -52,7 +52,8 @@ jobs:
          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: 
            name: backend
-           command: npm audit --audit-level=critical
+           command: npm install 
+                    npm audit --audit-level=critical
                       
 workflows:
   build_fb:
