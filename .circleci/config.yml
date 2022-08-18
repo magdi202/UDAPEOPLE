@@ -7,7 +7,7 @@ jobs:
      steps:
       - checkout
       - run:
-         name: Create Cloudformation Stack
+         name: Create Cloudformation
          command:
                 aws cloudformation deploy \
                 --template-file .circleci/files/backend.yml \
