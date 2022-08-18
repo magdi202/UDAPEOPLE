@@ -1,71 +1,19 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-  build-frontend:
+   build-cloudfront:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
       - run: 
-           name: frontend
-           command: npm install frontend 
-  build-backend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout 
-      - run: 
-           name: backend
-           command: npm install backend
-  test-frontend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - run: 
-           name: frontend
-           command: npm install frontend test
-  test-backend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - run: 
-           name: backend
-           command: npm install backend test
-  scan-frontend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-         key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run: 
-           name: frontend
-           command: npm install 
-                    npm audit --audit-level=critical
-  scan-backend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-         key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run: 
-           name: backend
-           command: npm install 
-                    npm audit --audit-level=critical
+           cd .circleci/files
+           aws cloudformation deploy \
+           --template-file cloudfront.yml \
+           --stack-name InitialStack\
+           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
                       
 workflows:
-  build_fb:
+  cloud-front:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-         requires: [build-frontend]
-      - test-backend:
-         requires: [build-backend] 
-      - scan-frontend:
-         requires: [build-frontend]
-      - scan-backend:
-         requires: [build-backend]
+      - build-cloudfront
