@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
       - run: 
+          name: create infrastructure backend
+          command:
            cd .circleci/files
            aws cloudformation deploy \
            --template-file backend.yml \
