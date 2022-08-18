@@ -3,7 +3,7 @@ version: 2.1
 jobs:
    run-migrations:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: circleci/node:10.16.3
     steps:
       - checkout
       - add_ssh_keys:
