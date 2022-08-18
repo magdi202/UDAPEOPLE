@@ -19,4 +19,4 @@ jobs:
 workflows:
   cloud-front:
     jobs:
-      - create_infrastructure
+      - create_infrastructure 
