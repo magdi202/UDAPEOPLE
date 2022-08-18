@@ -1,7 +1,7 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-   configure_infrastructure:
+   run-migrations:
     docker:
       - image: python:3.7-alpine3.11
     steps:
@@ -9,16 +9,15 @@ jobs:
       - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["xoxb-3562588158196-3957099160115-lQi61hRT3zDDfQuELiFAigYO"] 
+      
       - run:
-          name: Install Ansible
+          name: Run migrations
           command: |
-             apk add --update ansible
-          
-      - run:
-          name: Run Playbook and Configure server
-          command: cd .circleci/ansible
-                   ansible-playbook -i inventory.txt configure-server.yml
+             cd backend
+             npm install
+             # Run and save the migration output
+             npm run migrations > migrations_dump.txt  
 workflows:
   cloud-front:
     jobs:
-      - configure_infrastructure
+      - run-migrations
