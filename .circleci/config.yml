@@ -13,7 +13,7 @@ jobs:
             --template-file bucket.yml \
             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
-            --aws configure set region us-east-1 --profile admin
+            aws configure set region us-east-1 --profile admin
 workflows:
   cloud-front:
     jobs:
