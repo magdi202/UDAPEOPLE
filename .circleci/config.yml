@@ -8,9 +8,7 @@ jobs:
       - checkout
       - run: 
            name: frontend
-           command: cd frontend 
-                    npm install 
-                    npm run build
+           command: npm install frontend 
   build-backend:
     docker:
       - image: circleci/node:10.16.3
