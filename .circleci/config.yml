@@ -1,7 +1,7 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-   deploy-infrastructure:
+   deploy-infrastructure_backend:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -9,11 +9,13 @@ jobs:
       - run: 
            cd .circleci/files
            aws cloudformation deploy \
-           --template-file cloudfront.yml \
-           --stack-name InitialStack\
+           --template-file backend.yml \
+           --sack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
            --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
+           --tags project=udapeople
+           # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
                       
 workflows:
   cloud-front:
     jobs:
-      - deploy-infrastructure
+      - deploy-infrastructure_backend
