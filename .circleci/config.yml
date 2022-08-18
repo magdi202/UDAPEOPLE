@@ -42,7 +42,8 @@ jobs:
          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: 
            name: frontend
-           command: npm install
+           command: npm install 
+                    npm audit --audit-level=critical
   scan-backend:
     docker:
       - image: circleci/node:10.16.3
