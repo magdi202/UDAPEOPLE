@@ -115,18 +115,6 @@ jobs:
           name: Run Playbook and Configure server
           command: cd .circleci/ansible
                    ansible-playbook -i inventory.txt configure-server.yml
-  run-migrations:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      # Checkout code from git
-      - run:
-          name: Send migration results to memstash
-          command: |
-            cd backend
-            npm install
-            # Run and save the migration output
-            npm run migrations > env.txt  
   deploy_frontend:
     docker:
       - image: amazon/aws-cli
@@ -135,7 +123,7 @@ jobs:
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
-            aws cloudformation deploy \
+           aws cloudformation deploy \
             --template-file bucket.yml \
             --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
             --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
