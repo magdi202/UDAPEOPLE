@@ -115,11 +115,6 @@ jobs:
     steps:
       # Checkout code from git
       - run:
-          name: Run migrations
-          command: |
-            # Your code here
-            exit 1
-      - run:
           name: Send migration results to memstash
           command: |
             cd backend
