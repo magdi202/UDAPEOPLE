@@ -121,7 +121,7 @@ jobs:
     steps:
        - checkout
        - run: 
-          name: install dependencies
+          name: install python
           command: |
              apt-get install python-pip git.
        - run:
