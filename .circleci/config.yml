@@ -1,5 +1,16 @@
 version: 2.1
 #  Define the jobs we want to run for this project
+destroy-environment:
+ description: Destroy backend and frontend cloudformation stacks given a workflow ID.
+ parameters:
+  workflow_id:
+    type: string      
+ steps:
+  - run:
+      name: Destroy environments
+      when: on_fail
+      command: |
+        echo "Destroying environment: << parameters.workflow_id >> "
 jobs:
   build-frontend:
     docker:
