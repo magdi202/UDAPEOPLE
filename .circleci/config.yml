@@ -172,9 +172,25 @@ jobs:
             return 0
             else
             return 1
-            fi
+            fi 
             - destroy_environment  
-
+  frontend_smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: apk add --update curl
+      - run:
+          name: smoke test
+          command: |
+           URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+           echo ${URL} 
+           if curl -s ${URL} | grep "Welcome"
+           then
+           # Change this to 0 after the job fails
+           return 1
+           else
+           return 1
+           fi
 workflows:
   build_udapeople:
     jobs:
@@ -196,5 +212,5 @@ workflows:
       - create_and_deploy_frontend
       - create_and_deploy_backend
       - backend_smoke_test
-    
+      - frontend_smoke_test
       #- run-migrations
