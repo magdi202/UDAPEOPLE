@@ -142,7 +142,41 @@ jobs:
            npm run build
            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-  
+  create_and_deploy_backend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+       - checkout
+       - run:
+          name: Execute bucket.yml - Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+            --template-file bucket.yml \
+            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
+       - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+       - run:
+           cd frontend
+           npm install
+           npm run build
+           tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+       - run:
+           cd backend
+           npm i
+           npm run build
+           cd .. tar -C backend -czvf artifact.tar.gz .
+           cd .circleci/ansible
+           echo "Contents  of the inventory.txt file is -------"
+           cat inventory.txt
+           ansible-playbook -i inventory.txt deploy-backend.yml
 workflows:
   build_udapeople:
     jobs:
