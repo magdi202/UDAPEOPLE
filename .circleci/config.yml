@@ -1,69 +1,46 @@
-version: 2.1
-#  Define the jobs we want to run for this project
+version: '2.1'
+orbs:
+  slack: circleci/slack@4.1
 jobs:
-  build-frontend:
+  deploy:
     docker:
-      - image: circleci/node:13.8.0
+      - image: 'cimg/base:stable'
     steps:
-      - checkout
-      - run: 
-           name: frontend
-           command: npm install frontend 
-  build-backend:
+      - run: echo "deploy my app"
+      - slack/notify:
+          event: fail
+          mentions: '@EngineeringTeam'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+  test:
     docker:
-      - image: circleci/node:10.16.3
+      - image: 'cimg/base:stable'
     steps:
-      - checkout 
-      - run: 
-           name: backend
-           command: npm install backend
-  test-frontend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - run: 
-           name: frontend
-           command: npm install frontend test
-  test-backend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - run: 
-           name: backend
-           command: npm install backend test
-  scan-frontend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run: 
-           name: frontend
-           command: npm install
-  scan-backend:
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run: 
-           name: backend
-           command: npm install
-                    
+      - run: echo "test my app"
 workflows:
-  build_fb:
+  test-and-deploy:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-         requires: [build-frontend]
-      - test-backend:
-         requires: [build-backend] 
-      - scan-frontend:
-         requires: [build-frontend]
-      - scan-backend:
-         requires: [build-backend]
+      - test
+      - slack/on-hold:
+          context: slack-secrets
+          filters:
+            tags:
+              only: /^v.*/
+          requires:
+            - test
+      - pause_workflow:
+          filters:
+            tags:
+              only: /^v.*/
+          requires:
+            - test
+            - slack/on-hold
+          type: approval
+      - deploy:
+          filters:
+            tags:
+              only: /^v.*/
+          requires:
+            - pause_workflow
