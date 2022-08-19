@@ -202,7 +202,7 @@ jobs:
           name: Update cloudfront distribution
           command: |
             aws cloudformation deploy \
-            --template-file .circleci/files/cloudfront.yml \
+            --template-file cloudfront.yml \
             --stack-name InitialStack \
             --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888 \
       # Here's where you will add some code to rollback on failure  
