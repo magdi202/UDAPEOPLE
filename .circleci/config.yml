@@ -148,27 +148,6 @@ jobs:
     steps:
        - checkout
        - run:
-          name: Execute bucket.yml - Create Cloudformation Stack
-          command: |
-            aws cloudformation deploy \
-            --template-file bucket.yml \
-            --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
-            --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
-       - run:
-          name: Get backend url
-          command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-            cat frontend/.env
-       - run:
-           cd frontend
-           npm install
-           npm run build
-           tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-       - run:
            cd backend
            npm i
            npm run build
@@ -196,4 +175,5 @@ workflows:
       - configure_infrastructure
       - Run_Playbook
       - create_and_deploy_frontend
+      - create_and_deploy_backend
       #- run-migrations
