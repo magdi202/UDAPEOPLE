@@ -133,15 +133,10 @@ jobs:
     steps:
        - checkout
        - run: 
-          command:  install Python
-       - run: 
-          command:  install Ansible
-       - run: 
-          command:  install Node, NPM, and AWS CLI 
-       - run: 
-          command:  install NPM, and AWS CLI
-       - run: 
-          command:  install AWS CLI  
+          name: Install dependencies
+          command: |
+             apk add --update frontend
+    
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
