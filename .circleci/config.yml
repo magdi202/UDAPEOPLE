@@ -165,7 +165,7 @@ jobs:
       - run:
           name: smoke test
           command: |
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="http://${3.82.191.44}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
