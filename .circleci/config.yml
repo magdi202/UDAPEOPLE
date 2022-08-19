@@ -120,6 +120,10 @@ jobs:
       - image: amazon/aws-cli
     steps:
        - checkout
+       - run: 
+          name: install dependencies
+          command: |
+             apt-get install python-pip git.
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
