@@ -132,7 +132,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
        - checkout
-       - run: yum Install Python, Ansible, Node, NPM, and AWS CLI 
+       - run: /usr/bin/yum Install Python, Ansible, Node, NPM, and AWS CLI 
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
