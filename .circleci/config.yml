@@ -127,16 +127,11 @@ jobs:
             npm install
             # Run and save the migration output
             npm run migrations > env.txt  
-  deploy_frontnd:
+  deploy_frontend:
     docker:
       - image: amazon/aws-cli
     steps:
        - checkout
-       - run: 
-          name: Install dependencies
-          command: |
-             apk add --update frontend
-    
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
@@ -170,5 +165,5 @@ workflows:
       - deploy-infrastructure_frontend
       - configure_infrastructure
       - Run_Playbook
-      - deploy_frontnd
+      - deploy_frontend
       #- run-migrations 
