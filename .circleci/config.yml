@@ -1,19 +1,44 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
-   cloudfront-update:
+  build-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
     steps:
+      - checkout
       - run: 
-          name: create cloudfront
-          command: 
-            cd .circleci/files/
-            --template-file cloudfront.yml \
-            --stack-name InitialStack \
-            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --tags project=udapeople
+           name: frontend
+           command: npm install frontend 
+  build-backend:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout 
+      - run: 
+           name: backend
+           command: npm install backend
+  test-frontend:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run: 
+           name: frontend
+           command: npm install frontend test
+  test-backend:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - checkout
+      - run: 
+           name: backend
+           command: npm install backend test
 workflows:
-  cloud-front:
+  build_fb:
     jobs:
-      - cloudfront-update
+      - build-frontend
+      - build-backend
+      - test-frontend:
+         requires: [build-frontend]
+      - test-backend:
+         requires: [build-backend]
