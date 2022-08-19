@@ -144,3 +144,4 @@ workflows:
       - deploy-infrastructure_backend
       - deploy-infrastructure_frontend
       - configure_infrastructure
+      - run-migrations
