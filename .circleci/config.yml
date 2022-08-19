@@ -123,7 +123,7 @@ jobs:
        - run: 
           name: install python
           command: |
-             install python-pip git.
+             install python-circleci git.
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command:  
