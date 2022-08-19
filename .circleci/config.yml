@@ -101,7 +101,7 @@ jobs:
             # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["dd:d2:9d:b3:91:7e:2c:b7:c7:a0:ef:86:af:e5:c2:d2:40:c9:37:e7"] 
       - run:
-          name: Install Ansible
+          name: Install tar, gzip, ansible, awscli
           command: |
              apk add --update ansible
           
