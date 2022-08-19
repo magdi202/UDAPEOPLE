@@ -64,9 +64,53 @@ jobs:
            --template-file cloudfront.yml \
            --stack-name InitialStack\
            --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
-                    
+  deploy-infrastructure_backend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+           cd .circleci/files
+           aws cloudformation deploy \
+           --template-file backend.yml \
+           --sack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+           --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+           --tags project=udapeople
+           # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
+  deploy-infrastructure_frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+          name: create infrastructure frontend
+          command:
+           cd .circleci/files
+           aws cloudformation deploy \
+           --template-file frontend.yml \
+           --sack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+           --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+           --tags project=udapeople
+           # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+            # You can get this ID in the section where you registered the SSH Key
+            fingerprints: ["dd:d2:9d:b3:91:7e:2c:b7:c7:a0:ef:86:af:e5:c2:d2:40:c9:37:e7"] 
+      - run:
+          name: Install Ansible
+          command: |
+             apk add --update ansible
+          
+      - run:
+          name: Run Playbook and Configure server
+          command: cd .circleci/ansible
+                   ansible-playbook -i inventory.txt configure-server.yml               
 workflows:
-  build_fb:
+  build_udapeople:
     jobs:
       - build-frontend
       - build-backend
@@ -79,3 +123,6 @@ workflows:
       - scan-backend:
          requires: [build-backend] 
       - deploy-cloudfront
+      - deploy-infrastructure_backend
+      - deploy-infrastructure_frontend
+      - configure_infrastructure
