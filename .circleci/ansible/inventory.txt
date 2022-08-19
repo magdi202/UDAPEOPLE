@@ -1,1 +1,1 @@
-[web]
+[ec2-3-82-191-44.compute-1.amazonaws.com]
