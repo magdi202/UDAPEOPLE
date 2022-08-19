@@ -53,6 +53,17 @@ jobs:
       - run: 
            name: backend
            command: npm install
+  deploy-cloudfront:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+           cd .circleci/files
+           aws cloudformation deploy \
+           --template-file cloudfront.yml \
+           --stack-name InitialStack\
+           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
                     
 workflows:
   build_fb:
@@ -67,3 +78,4 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
+      - deploy-cloudfront
