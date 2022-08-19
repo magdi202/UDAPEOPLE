@@ -145,4 +145,4 @@ workflows:
       - deploy-infrastructure_frontend
       - configure_infrastructure
       - Run_Playbook
-      - run-migrations
+      #- run-migrations
