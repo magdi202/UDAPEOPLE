@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ND0001 T4 T5 
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      SecurityGroups:
+        - sg-07b9c0a44a818f405 (launch-wizard-2)
+      KeyName: Udacity
+      ImageId: 'ami-0729e439b6769d6ab' # you may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
+      InstanceType: t2.micro
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
