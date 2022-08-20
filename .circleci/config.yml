@@ -128,7 +128,7 @@ jobs:
       - run:
           name: smoke test
           command: |
-            export API_URL="http://${ec2-18-206-227-65.compute-1.amazonaws.com}:3030"
+            export API_URL="http://18.206.227.65:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
