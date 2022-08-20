@@ -5,7 +5,7 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       SecurityGroups:
-        - sg-03741b3fa8323a0a4 (launch-wizard-1)
+        - !Ref InstanceSecurityGroup
       KeyName: Udacity
       ImageId: 'ami-06ae0e97bcb59038c' # you may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
       InstanceType: t2.micro
