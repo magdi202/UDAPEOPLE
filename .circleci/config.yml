@@ -222,8 +222,8 @@ workflows:
       #- deploy-cloudfront
       #- deploy-infrastructure_backend
       #- deploy-infrastructure_frontend
-      - Run_Playbook
-      #- configure_infrastructure
+      #- Run_Playbook
+      - configure_infrastructure
       #- create_and_deploy_frontend
       #- create_and_deploy_backend
       #- backend_smoke_test
