@@ -1,7 +1,7 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 jobs:
- create_infrastructure_backend: 
+ create_infrastructure_frontend: 
       docker:
         - image: amazon/aws-cli
       steps:
@@ -10,12 +10,12 @@ jobs:
             name: Create Cloudformation Stack
             command: |
               aws cloudformation deploy \
-                --template-file .circleci/files/backend.yml \
-                --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --template-file .circleci/files/frontend.yml \
+                --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
                 --tags project=udapeople
                 --region us-east-1
 workflows:
   build_udapeople:
     jobs:
-      - create_infrastructure_backend
+      - create_infrastructure_frontend
