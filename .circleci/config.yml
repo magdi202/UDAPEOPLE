@@ -126,6 +126,7 @@ jobs:
             else
             return 1
             fi
+            - destroy_environment 
   frontend_smoke_test:
     docker:
       - image: alpine:latest
@@ -143,6 +144,7 @@ jobs:
            else
            return 1
            fi
+           - destroy_environment 
 workflows:
   build_udapeople:
     jobs:
