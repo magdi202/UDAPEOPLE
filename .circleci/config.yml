@@ -16,4 +16,4 @@ jobs:
 workflows:
   build_udapeople:
     jobs:
-      - create_infrastructure 
+      - create_infrastructure
