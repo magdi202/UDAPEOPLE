@@ -127,4 +127,4 @@ workflows:
       - deploy-infrastructure
       - configure_infrastructure
       - Run_Playbook
-      - run-migrations
+      - run-migrations 
