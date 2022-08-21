@@ -184,7 +184,7 @@ jobs:
       - run:
           name: smoke test
           command: |
-            export API_URL="http://$3.82.188.248:3030"
+            export API_URL="http://3.82.188.248:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
@@ -246,6 +246,6 @@ workflows:
       #- run-migrations
       #- create_and_deploy_frontend
       #- create_and_deploy_backend
-      #- backend_smoke_test
-      - frontend_smoke_test
+      - backend_smoke_test
+      #- frontend_smoke_test
       #- cloudfront-update
