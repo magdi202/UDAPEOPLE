@@ -159,6 +159,10 @@ jobs:
       - image: amazon/aws-cli
     steps:
        - checkout
+       - add_ssh_keys:
+            # You can get this ID in the section where you registered the SSH Key
+            fingerprints: ["7e:72:c0:23:ff:f3:1c:d9:4b:d7:82:73:89:65:e8:b3"]
+      
        - run:
            cd backend
            npm i
