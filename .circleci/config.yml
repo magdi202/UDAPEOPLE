@@ -265,9 +265,9 @@ workflows:
       #- deploy-infrastructure_frontend
       #- Run_Playbook
       #- configure_infrastructure
-      - run-migrations
+      #- run-migrations
       #- create_and_deploy_frontend
       #- create_and_deploy_backend
-      #- backend_smoke_test
-      #- frontend_smoke_test
+      - backend_smoke_test
+      - frontend_smoke_test
       #- cloudfront-update
