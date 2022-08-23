@@ -113,7 +113,7 @@ jobs:
             fingerprints: ["7e:72:c0:23:ff:f3:1c:d9:4b:d7:82:73:89:65:e8:b3"]
       - run:
           name: Install dependencies
-          command: |
+          command: | 
              apk add --update ansible
   run-migrations:
     docker:
