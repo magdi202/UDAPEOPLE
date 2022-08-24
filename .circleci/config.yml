@@ -110,7 +110,7 @@ jobs:
       - checkout
       - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["7e:72:c0:23:ff:f3:1c:d9:4b:d7:82:73:89:65:e8:b3"]
+            fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
       - run:
           name: Install dependencies
           command: | 
@@ -166,7 +166,7 @@ jobs:
        - checkout
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["7e:72:c0:23:ff:f3:1c:d9:4b:d7:82:73:89:65:e8:b3"]
+            fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
       
        - run:
            cd backend
@@ -250,24 +250,24 @@ jobs:
 workflows:
   build_udapeople:
     jobs:
-      #- build-frontend
-      #- build-backend
-      #- test-frontend:
-      #   requires: [build-frontend]
-      #- test-backend:
-      #   requires: [build-backend] 
-      #- scan-frontend:
-      #   requires: [build-frontend]
-      #- scan-backend:
-      #   requires: [build-backend] 
-      #- deploy-cloudfront
-      #- deploy-infrastructure_backend
-      #- deploy-infrastructure_frontend
-      #- Run_Playbook
-      #- configure_infrastructure
-      #- run-migrations
-      #- create_and_deploy_frontend
-      #- create_and_deploy_backend
+      - build-frontend
+      - build-backend
+      - test-frontend:
+         requires: [build-frontend]
+      - test-backend:
+         requires: [build-backend] 
+      - scan-frontend:
+         requires: [build-frontend]
+      - scan-backend:
+         requires: [build-backend] 
+      - deploy-cloudfront
+      - deploy-infrastructure_backend
+      - deploy-infrastructure_frontend
+      - Run_Playbook
+      - configure_infrastructure
+      - run-migrations
+      - create_and_deploy_frontend
+      - create_and_deploy_backend
       - backend_smoke_test
       - frontend_smoke_test
-      #- cloudfront-update
+      - cloudfront-update
