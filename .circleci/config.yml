@@ -63,7 +63,23 @@ jobs:
            aws cloudformation deploy \
            --template-file cloudfront.yml \
            --stack-name InitialStack\
-           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
+           --parameter-overrides WorkflowID=udapeople-dd1j287dhjppmz898
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
+      # Fail the job intentionally to simulate an error.
+      # Uncomment the line below if you want to fail the current step
+      # - run: return 1
+      #- destroy_environment
   deploy-infrastructure_backend:
     docker:
       - image: amazon/aws-cli
@@ -243,9 +259,10 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-     # - deploy-cloudfront
+      - deploy-cloudfront
+      - create_infrastructure
       - deploy-infrastructure_backend
-     # - deploy-infrastructure_frontend
+      - deploy-infrastructure_frontend
      # - Run_Playbook
      # - configure_infrastructure
      # - run-migrations
