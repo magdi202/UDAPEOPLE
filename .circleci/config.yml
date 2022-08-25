@@ -198,7 +198,7 @@ jobs:
            pm2 start npm -- start
        - run:
           name:  start app
-          command:  pm2 start main.ts
+          command:  pm2 start main.js
           args:
            chdir: ~/backend/dist
           
