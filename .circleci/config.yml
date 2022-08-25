@@ -244,13 +244,13 @@ workflows:
      # - scan-backend:
      #    requires: [build-backend] 
      # - deploy-cloudfront
-     # - deploy-infrastructure_backend
+      - deploy-infrastructure_backend
      # - deploy-infrastructure_frontend
      # - Run_Playbook
      # - configure_infrastructure
      # - run-migrations
      # - create_and_deploy_frontend
-      - create_and_deploy_backend
+     # - create_and_deploy_backend
      # - backend_smoke_test
      # - frontend_smoke_test
      # - cloudfront-update
