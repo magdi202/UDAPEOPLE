@@ -63,7 +63,7 @@ jobs:
            aws cloudformation deploy \
            --template-file cloudfront.yml \
            --stack-name InitialStack\
-           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz888
+           --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz8889
   deploy-infrastructure_backend:
     docker:
       - image: amazon/aws-cli
@@ -243,8 +243,8 @@ workflows:
      #    requires: [build-frontend]
      # - scan-backend:
      #    requires: [build-backend] 
-     # - deploy-cloudfront
-      - deploy-infrastructure_backend
+      - deploy-cloudfront
+     # - deploy-infrastructure_backend
      # - deploy-infrastructure_frontend
      # - Run_Playbook
      # - configure_infrastructure
