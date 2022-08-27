@@ -135,7 +135,7 @@ jobs:
              apk add --update ansible
       - run:
           name:  start app
-          command:  pm2 start main.js
+          command:  pm2 start main.yml
           args:
            chdir: ~/backend/dist
           environment:
