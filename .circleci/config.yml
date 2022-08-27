@@ -180,24 +180,7 @@ jobs:
        - checkout
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
-       - run:
-          name:  start app
-          command:  pm2 start main.ts
-          args:
-           chdir: ~/backend/dist
-          environment:
-           ENVIRONMENT: production
-           TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-           TYPEORM_MIGRATIONS_DIR: "./migrations"
-           TYPEORM_MIGRATIONS: "./migrations/*.js"
-           TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-           TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-           TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-           TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-           TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-           TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-            
+            fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]    
        - run:
            cd backend
            npm i
