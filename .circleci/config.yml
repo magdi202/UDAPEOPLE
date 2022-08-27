@@ -153,7 +153,7 @@ jobs:
            aws cloudformation deploy \
            --template-file cloudfront.yml \
            --stack-name InitialStack\
-           --parameter-overrides WorkflowID=udapeople-dd1j287dhjppmz898
+           --parameter-overrides WorkflowID=udapeople-dd1j287dhjppmz9898
   
   create_infrastructure: 
     docker:
@@ -165,7 +165,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file template.yml \
-              --stack-name udapeople-${CIRCLE_WORKFLOW_ID:0:5} \
+              --stack-name udapeople-${CIRCLE_WORKFLOW_ID:0:7} \
               --region us-east-1
       # Fail the job intentionally to simulate an error.
       # Uncomment the line below if you want to fail the current step
@@ -203,7 +203,7 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             aws cloudformation describe-stacks \
-            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --stack-name "udapeople-backend-74" \
             --query "Stacks[0].Outputs[0].OutputValue" \
             --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -417,24 +417,24 @@ jobs:
 workflows:
   build_udapeople:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-         requires: [build-frontend]
-      - test-backend:
-         requires: [build-backend] 
-      - scan-frontend:
-         requires: [build-frontend]
-      - scan-backend:
-         requires: [build-backend] 
+     # - build-frontend
+     # - build-backend
+     # - test-frontend:
+     #    requires: [build-frontend]
+     # - test-backend:
+     #    requires: [build-backend] 
+     # - scan-frontend:
+     #    requires: [build-frontend]
+     # - scan-backend:
+     #    requires: [build-backend] 
       - deploy-cloudfront
-     # - create_infrastructure
-      - deploy-infrastructure_backend
-      - deploy-infrastructure_frontend
-      - configure_infrastructure
-      - run-migrations
-      - create_and_deploy_frontend
-      - create_and_deploy_backend
+     #  - create_infrastructure
+      #- deploy-infrastructure_backend
+      #- deploy-infrastructure_frontend
+      #- configure_infrastructure
+      #- run-migrations
+      #- create_and_deploy_frontend
+      #- create_and_deploy_backend
       #- backend_smoke_test
       #- frontend_smoke_test
       #- cloudfront-update
