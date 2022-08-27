@@ -108,17 +108,6 @@ jobs:
            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
            --tags project=udapeople
            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
-  
-  Run_Playbook:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - run:
-          name: Run Playbook and Configure server
-          command: cd .circleci/ansible
-                   ansible-playbook -i inventory.txt configure-server.yml
-                   python3 -m pip install --user argcomplete
 
   configure_infrastructure:
     docker:
@@ -130,26 +119,16 @@ jobs:
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
       - run:
           name: Install dependencies
-                npm Install pm2 
           command: | 
-             apk add --update ansible
+             python3 -m pip install --user argcomplete
+             apk add --update ansible 
+                                
       - run:
-          name:  start app
-          command:  pm2 start main.yml
-          args:
-           chdir: ~/backend/dist
-          environment:
-           ENVIRONMENT: production
-           TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-           TYPEORM_MIGRATIONS_DIR: "./migrations"
-           TYPEORM_MIGRATIONS: "./migrations/*.js"
-           TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-           TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-           TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-           TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-           TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-           TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-       
+          name: Run Playbook and Configure server
+          command: cd .circleci/ansible
+                   ansible-playbook -i inventory.txt configure-server.yml
+
+
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
@@ -202,7 +181,23 @@ jobs:
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
-      
+       - run:
+          name:  start app
+          command:  pm2 start main.ts
+          args:
+           chdir: ~/backend/dist
+          environment:
+           ENVIRONMENT: production
+           TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+           TYPEORM_MIGRATIONS_DIR: "./migrations"
+           TYPEORM_MIGRATIONS: "./migrations/*.js"
+           TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+           TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+           TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+           TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+           TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+           TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+            
        - run:
            cd backend
            npm i
@@ -214,7 +209,7 @@ jobs:
            ansible-playbook -i inventory.txt deploy-backend.yml
            npm install
            pm2 stop default
-           pm2 start npm -- start   
+           pm2 start npm -- start 
   backend_smoke_test:
     docker:
       - image: alpine:latest
@@ -281,7 +276,6 @@ workflows:
      # - create_infrastructure
       - deploy-infrastructure_backend
       - deploy-infrastructure_frontend
-      - Run_Playbook
       - configure_infrastructure
       - run-migrations
       - create_and_deploy_frontend
