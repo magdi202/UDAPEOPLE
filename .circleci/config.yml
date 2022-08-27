@@ -130,6 +130,7 @@ jobs:
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
       - run:
           name: Install dependencies
+                npm Install pm2 
           command: | 
              apk add --update ansible
       - run:
