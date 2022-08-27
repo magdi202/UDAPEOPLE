@@ -126,7 +126,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: cd .circleci/ansible
-                   ansible-playbook -i inventory.txt main.yml configure-server.yml 
+                   ansible-playbook -i inventory.txt main.yml configure-server.yml
 
 
   run-migrations:
