@@ -427,14 +427,14 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-      #- deploy-cloudfront
+      - deploy-cloudfront
      # - create_infrastructure
-      #- deploy-infrastructure_backend
-      #- deploy-infrastructure_frontend
-      #- configure_infrastructure
-      #- run-migrations
-      #- create_and_deploy_frontend
-      #- create_and_deploy_backend
+      - deploy-infrastructure_backend
+      - deploy-infrastructure_frontend
+      - configure_infrastructure
+      - run-migrations
+      - create_and_deploy_frontend
+      - create_and_deploy_backend
       #- backend_smoke_test
       #- frontend_smoke_test
       #- cloudfront-update
