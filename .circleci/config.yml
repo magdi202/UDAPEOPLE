@@ -129,6 +129,7 @@ jobs:
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
       - run:
           name: Install dependencies
+                npm install pm2 -g
           command: | 
              apk add --update ansible
   run-migrations:
@@ -188,7 +189,6 @@ jobs:
            cd backend
            npm i
            npm run build
-           npm install pm2 -g
            cd .. tar -C backend -czvf artifact.tar.gz .
            cd .circleci/ansible
            echo "Contents  of the inventory.txt file is -------"
