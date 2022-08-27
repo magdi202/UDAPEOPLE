@@ -118,6 +118,7 @@ jobs:
           name: Run Playbook and Configure server
           command: cd .circleci/ansible
                    ansible-playbook -i inventory.txt configure-server.yml
+                   python3 -m pip install --user argcomplete
 
   configure_infrastructure:
     docker:
