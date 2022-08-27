@@ -281,9 +281,10 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
-            API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL=${API_URL}" >> frontend/.env
+            export API_URL= "http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
        - run:
           name: Deploy frontend objects
           working_directory: ./frontend
@@ -312,7 +313,6 @@ jobs:
        - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm ansible zip
             pip install awscli
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
