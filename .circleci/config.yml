@@ -183,7 +183,7 @@ jobs:
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
        - run:
           name:  start app
-          command:  pm2 start main.ts
+          command:  pm2 start main.yml
           args:
            chdir: ~/backend/dist
           environment:
