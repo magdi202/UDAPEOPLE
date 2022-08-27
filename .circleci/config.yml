@@ -126,7 +126,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: cd .circleci/ansible
-                   ansible-playbook -i inventory.txt configure-server.yml
+                   ansible-playbook -i inventory.txt main4.yml configure-server.yml
 
 
   run-migrations:
@@ -183,7 +183,7 @@ jobs:
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
        - run:
           name:  start app
-          command:  pm2 start main.yml
+          command:  pm2 start main.ts
           args:
            chdir: ~/backend/dist
           environment:
