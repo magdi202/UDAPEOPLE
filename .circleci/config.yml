@@ -310,10 +310,6 @@ jobs:
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
        - checkout
-       - run:
-          name: Install dependencies
-          command: |
-            pip install awscli
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]    
