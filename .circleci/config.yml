@@ -203,7 +203,7 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             aws cloudformation describe-stacks \
-            --stack-name "udapeople-backend-74" \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query "Stacks[0].Outputs[0].OutputValue" \
             --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -417,20 +417,20 @@ jobs:
 workflows:
   build_udapeople:
     jobs:
-     # - build-frontend
-     # - build-backend
-     # - test-frontend:
-     #    requires: [build-frontend]
-     # - test-backend:
-     #    requires: [build-backend] 
-     # - scan-frontend:
-     #    requires: [build-frontend]
-     # - scan-backend:
-     #    requires: [build-backend] 
+      - build-frontend
+      - build-backend
+      - test-frontend:
+         requires: [build-frontend]
+      - test-backend:
+         requires: [build-backend] 
+      - scan-frontend:
+         requires: [build-frontend]
+      - scan-backend:
+         requires: [build-backend] 
       - deploy-cloudfront
      #  - create_infrastructure
-      #- deploy-infrastructure_backend
-      #- deploy-infrastructure_frontend
+      - deploy-infrastructure_backend
+      - deploy-infrastructure_frontend
       #- configure_infrastructure
       #- run-migrations
       #- create_and_deploy_frontend
