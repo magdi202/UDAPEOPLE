@@ -190,9 +190,9 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            export API_URL="http://54.144.209.184:3030"
+            export API_URL="http://44.208.24.95:3030"
             echo "API_URL = ${API_URL}"
-            echo API_URL="http://54.144.209.184:3030" >> frontend/.env
+            echo API_URL="http://44.208.24.95:3030" >> frontend/.env
             cat frontend/.env
        - run:
            cd frontend
@@ -228,7 +228,7 @@ jobs:
       - run:
           name: smoke test
           command: |
-            export API_URL="http://54.144.209.184:3030"
+            export API_URL="http://44.208.24.95:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
