@@ -309,8 +309,6 @@ jobs:
           TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
        - checkout
-       - attach_workspace:
-          at: ~/
        - run:
           name: Install dependencies
           command: |
@@ -339,7 +337,6 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: apk add --update curl
-             pip install awscli
       - run:
           name: smoke test
           command: |
