@@ -348,9 +348,10 @@ jobs:
           name: Install dependencies
           command: |
                 apk add curl
-                apk install nodejs
+                yum install nodejs -y
                 apk add --update nodejs nodejs-npm
                 apk add --update npm
+                
 
                 
       - run:
