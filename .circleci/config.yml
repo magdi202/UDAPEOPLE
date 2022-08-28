@@ -176,6 +176,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - dependencies
       - run: 
           cd .circleci/files
            aws cloudformation deploy \
@@ -399,10 +400,10 @@ workflows:
      #  - create_infrastructure
       - deploy-infrastructure_backend
       - deploy-infrastructure_frontend
-      - configure_infrastructure
-      - run-migrations
-      - create_and_deploy_frontend
-      - create_and_deploy_backend
-      - backend_smoke_test
+      #- configure_infrastructure
+      #- run-migrations
+      #- create_and_deploy_frontend
+      #- create_and_deploy_backend
+      #- backend_smoke_test
       #- frontend_smoke_test
       #- cloudfront-update
