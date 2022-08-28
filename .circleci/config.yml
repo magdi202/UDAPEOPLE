@@ -273,6 +273,10 @@ jobs:
           keys:
             - build-frontend
        - run:
+          name: Install dependencies
+          command: |
+                apk add --update nodejs npm      
+       - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command: |
             aws cloudformation deploy \
@@ -410,4 +414,4 @@ workflows:
       - create_and_deploy_backend
       - backend_smoke_test
       - frontend_smoke_test
-      - cloudfront-update 
+      - cloudfront-update
