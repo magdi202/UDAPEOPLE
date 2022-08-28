@@ -277,7 +277,7 @@ jobs:
           command: |
                 curl -sL https://rpm.nodesource.com/setup_10.x | bash -
                 yum install nodejs -y
-                apt install -y tar gzip curl software-properties-common
+                yum install -y tar gzip curl software-properties-common
        - run:
           name: Execute bucket.yml - Create Cloudformation Stack
           command: |
