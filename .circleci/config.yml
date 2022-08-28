@@ -276,7 +276,7 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            export API_URL= "http://${BACKEND_IP}:3030"
+            export API_URL= "http://34.228.116.51:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
