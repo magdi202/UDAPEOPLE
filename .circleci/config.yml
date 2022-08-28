@@ -347,7 +347,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-                pk add --update curl
+                apk add --update curl
                 pip install awscli
                 
       - run:
