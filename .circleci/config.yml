@@ -347,7 +347,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-                curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+                apk add curl
                 apk install nodejs -y
                 apk add --update nodejs nodejs-npm
                 apk add --update npm
