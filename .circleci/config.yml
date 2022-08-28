@@ -141,8 +141,21 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: 
            name: backend
-           command: npm install 
-  create_infrastructure:
+           command: npm install
+  
+  deploy-cloudfront:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+           cd .circleci/files
+           aws cloudformation deploy \
+           --template-file cloudfront.yml \
+           --stack-name InitialStack\
+           --parameter-overrides WorkflowID=udapeople-dd1j287dhjppmz9898
+  
+  create_infrastructure: 
     docker:
       - image: amazon/aws-cli
     steps:
@@ -150,19 +163,12 @@ jobs:
       - run:
           name: Create Cloudformation Stack
           command: |
-            cd .circleci/files
-            aws cloudformation deploy \
-            --template-file cloudfront.yml \
-            --stack-name InitialStack\
-            --parameter-overrides WorkflowID=udapeople-dd1j287dhjppmz545
-            
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople
             # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
-            
             aws cloudformation deploy \
             --template-file .circleci/files/frontend.yml \
             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -393,7 +399,7 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-      #- deploy-cloudfront
+      - deploy-cloudfront
       - create_infrastructure
       - deploy-infrastructure
  #     - deploy-infrastructure_frontend
