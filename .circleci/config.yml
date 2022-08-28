@@ -364,7 +364,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
-      - run: apk add --update curl
+      - run: yum add --update curl
              pip install awscli
       - run:
           name: smoke test
