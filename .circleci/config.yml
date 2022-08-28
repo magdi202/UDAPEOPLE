@@ -345,19 +345,25 @@ jobs:
           at: ~/
       - run: apk add --update curl
       - run:
+          name: Install dependencies
+          command: |
+                curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+                yum install nodejs -y
+                yum install -y tar gzip curl software-properties-common
+      - run:
           name: smoke test
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDnsName' \
-            --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL=${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
-            then
-            return 0
-            else
-            return 1
-            fi 
+             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDnsName' \
+             --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+             --output text)
+             export API_URL="http://${BACKEND_IP}:3030"
+             echo "API_URL=${API_URL}"
+             if curl "${API_URL}/api/status" | grep "ok"
+             then
+             return 0
+             else
+             return 1
+             fi 
            # - destroy_environment  
              #BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
   frontend_smoke_test:
