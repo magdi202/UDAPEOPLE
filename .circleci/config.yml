@@ -348,8 +348,11 @@ jobs:
           name: Install dependencies
           command: |
                 curl -sL https://rpm.nodesource.com/setup_10.x | bash -
-                yum install nodejs -y
-                yum install -y tar gzip curl software-properties-common
+                apk install nodejs -y
+                apk add --update nodejs nodejs-npm
+                apk add --update npm
+
+                
       - run:
           name: smoke test
           command: |
