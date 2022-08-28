@@ -176,7 +176,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - dependencies
       - run: 
           cd .circleci/files
            aws cloudformation deploy \
