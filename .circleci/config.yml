@@ -1,6 +1,6 @@
 version: 2.1
 #  Define the jobs we want to run for this project
-commands:
+Jobs: 
   deploy-cloudfront:
     docker:
       - image: amazon/aws-cli
@@ -12,7 +12,6 @@ commands:
            --template-file cloudfront.yml \
            --stack-name InitialStack\
            --parameter-overrides WorkflowID=udapeople-kk1j287ppmppmp787
-
 workflows:
   build_udapeople:
     jobs:
