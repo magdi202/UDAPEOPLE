@@ -149,7 +149,6 @@ jobs:
     steps:
       - checkout
       - run: 
-          name: create backend infrastructure
           command:
            cd .circleci/files
            aws cloudformation deploy \
@@ -159,7 +158,6 @@ jobs:
              --tags project=udapeople 
            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
       - run: 
-          name: create frontend infrastructure
           command:
            cd .circleci/files
            aws cloudformation deploy \
