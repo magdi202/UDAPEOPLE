@@ -78,8 +78,7 @@ jobs:
           - build-frontend
       - run: 
            name: frontend
-           command: cd frontend
-                    npm install frontend 
+           command: npm install frontend 
                     npm run build
       - save_cache:
           key: build-frontend
