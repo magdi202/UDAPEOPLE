@@ -143,7 +143,7 @@ jobs:
            name: backend
            command: npm install
   
-  create_infrastructure: 
+  deploy_infrastructure: 
     docker:
       - image: amazon/aws-cli
     steps:
@@ -382,7 +382,7 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-      - create-infrastructure:
+      - deploy-infrastructure: 
          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
          filters:
            branches:
