@@ -151,6 +151,7 @@ jobs:
       - run: 
           name: create backend infrastructure
           command:
+           cd .circleci/files
            aws cloudformation deploy \
              --template-file backend.yml \
              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -160,6 +161,7 @@ jobs:
       - run: 
           name: create frontend infrastructure
           command:
+           cd .circleci/files
            aws cloudformation deploy \
              --template-file frontend.yml \
              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
