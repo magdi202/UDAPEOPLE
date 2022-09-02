@@ -143,13 +143,13 @@ jobs:
            name: backend
            command: npm install
 
-  deploy-infrastructure:
+  create-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run: 
-          name: Ensure backend infrastructure exist
+          name: create backend infrastructure
           command:
            cd .circleci/files
            aws cloudformation deploy \
@@ -159,7 +159,7 @@ jobs:
            --tags project=udapeople 
            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
       - run: 
-          name: Ensure frontend infrastructure exist
+          name: create frontend infrastructure
           command:
            cd .circleci/files
            aws cloudformation deploy \
@@ -394,7 +394,7 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-      - deploy-infrastructure:
+      - create-infrastructure:
          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
          filters:
            branches:
