@@ -184,7 +184,9 @@ jobs:
     steps:
       - checkout
       - run: 
-          cd .circleci/files
+          name: Ensure backend infrastructure exist
+          command:
+           cd .circleci/files
            aws cloudformation deploy \
            --template-file backend.yml \
            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -192,7 +194,7 @@ jobs:
            --tags project=udapeople 
            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
       - run: 
-          name: create infrastructure frontend
+          name: Ensure frontend infrastructure exist
           command:
            cd .circleci/files
            aws cloudformation deploy \
@@ -201,7 +203,17 @@ jobs:
            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
            --tags project=udapeople
            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
- 
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws cloudformation describe-stacks \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Stacks[0].Outputs[0].OutputValue" \
+            --output text >> .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -343,7 +355,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/
-      - run: apk add --update curl
       - run:
           name: Install dependencies
           command: |
@@ -351,7 +362,7 @@ jobs:
                 pip install awscli
                 
       - run:
-          name: smoke test
+          name: backend smoke test
           command: |
              export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDnsName' \
              --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -418,14 +429,14 @@ workflows:
          requires: [build-frontend]
       - scan-backend:
          requires: [build-backend] 
-      - deploy-cloudfront
-      - create_infrastructure
-      - deploy-infrastructure
+      #- deploy-cloudfront
+      #- create_infrastructure
+      #- deploy-infrastructure
  #     - deploy-infrastructure_frontend
-      - configure_infrastructure
-      - run-migrations
-      - create_and_deploy_frontend
-      - create_and_deploy_backend
-      - backend_smoke_test
-      - frontend_smoke_test
+      #- configure_infrastructure
+      #- run-migrations
+      #- create_and_deploy_frontend
+      #- create_and_deploy_backend
+      #- backend_smoke_test
+      #- frontend_smoke_test
      # - cloudfront-update
