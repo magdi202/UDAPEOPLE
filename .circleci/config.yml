@@ -142,30 +142,31 @@ jobs:
       - run: 
            name: backend
            command: npm install
-
-  create-infrastructure:
+  
+  create_infrastructure: 
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: 
-          command:
-           cd .circleci/files
-           aws cloudformation deploy \
-             --template-file backend.yml \
-             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-             --tags project=udapeople 
-           # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
-      - run: 
-          command:
-           cd .circleci/files
-           aws cloudformation deploy \
-             --template-file frontend.yml \
-             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-             --tags project=udapeople
-           # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/backend.yml \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople
+            # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
+            aws cloudformation deploy \
+            --template-file .circleci/files/frontend.yml \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople
+      # Fail the job intentionally to simulate an error.
+      # Uncomment the line below if you want to fail the current step
+      # - run: return 1
+      #- destroy_environment
+
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
