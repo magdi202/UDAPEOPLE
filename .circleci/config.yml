@@ -367,33 +367,33 @@ jobs:
 workflows:
   build_udapeople:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-         requires: [build-frontend]
-      - test-backend:
-         requires: [build-backend] 
-      - scan-frontend:
-         requires: [build-frontend]
-      - scan-backend:
-         requires: [build-backend] 
-      - deploy-infrastructure:
-         requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-         filters:
-           branches:
-             only: [master]
-      - configure-infrastructure:
-         requires: [deploy-infrastructure]
-      - run-migrations:
-         requires: [configure-infrastructure] 
-      - create_and_deploy_frontend:
-         requires: [run-migrations]
-      - create_and_deploy_backend:
-         requires: [run-migrations]
-      - backend_smoke_test:
-         requires: [create_and_deploy_backend]
-      - frontend_smoke_test:
-         requires: [create_and_deploy_frontend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #    requires: [build-frontend]
+      # - test-backend:
+      #    requires: [build-backend] 
+      # - scan-frontend:
+      #    requires: [build-frontend]
+      # - scan-backend:
+      #    requires: [build-backend] 
+      # - deploy-infrastructure:
+      #    requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #    filters:
+      #      branches:
+      #        only: [master]
+      # - configure-infrastructure:
+      #    requires: [deploy-infrastructure]
+      # - run-migrations:
+      #    requires: [configure-infrastructure] 
+      # - create_and_deploy_frontend:
+      #    requires: [run-migrations]
+      # - create_and_deploy_backend:
+      #    requires: [run-migrations]
+      - backend_smoke_test 
+      #    requires: [create_and_deploy_backend]
+      # - frontend_smoke_test:
+      #    requires: [create_and_deploy_frontend]
      # - cloudfront-update:
      #    requires: [smoke-test]
      # - cleanup:
