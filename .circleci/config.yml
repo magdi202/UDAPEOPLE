@@ -165,7 +165,7 @@ jobs:
       # Uncomment the line below if you want to fail the current step
      # - run: return 1
       #- destroy_environment
-  configure_infrastructure:
+  configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
         environment:
@@ -384,7 +384,7 @@ workflows:
          filters:
            branches:
              only: [master]
-      - configure_infrastructure:
+      - configure-infrastructure:
          requires: [deploy-infrastructure]
       - run-migrations:
          requires: [configure-infrastructure]
