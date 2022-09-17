@@ -183,7 +183,7 @@ jobs:
       - checkout
       - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["f2:d2:02:34:ec:ab:54:42:e8:5e:4b:74:62:6b:4f:43"]
+            fingerprints: ["d9:cf:91:b8:8c:59:4a:1d:0b:7b:40:dd:7d:60:6e:7b"]
       - attach_workspace:
           at: ~/
       - run:
@@ -385,8 +385,8 @@ workflows:
          filters:
            branches:
              only: [master]
-     # - configure_infrastructure:
-     #    requires: [deploy-infrastructure]
+      - configure_infrastructure:
+         requires: [deploy-infrastructure]
      # - run-migrations:
      #    requires: [configure-infrastructure]
      # - create_and_deploy_frontend:
