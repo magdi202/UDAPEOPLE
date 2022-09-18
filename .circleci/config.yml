@@ -391,7 +391,7 @@ workflows:
          requires: [run-migrations]
       - create_and_deploy_backend:
          requires: [run-migrations]
-      - backend_smoke_test 
+      - backend_smoke_test: 
          requires: [create_and_deploy_backend]
       - frontend_smoke_test:
          requires: [create_and_deploy_frontend]
