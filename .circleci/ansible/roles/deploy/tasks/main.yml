@@ -32,20 +32,16 @@
   apt:
     upgrade: "yes"
 
-- name: "install dependencies."
+ - name: "install dependencies."
   become: true
   apt:
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
-- name: "install pm2"
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+- name: install pm2
+  command: npm install pm2 -g
+
 
 - name: "Creates backend app directory"
   file:
@@ -76,9 +72,9 @@
   register: execute_node
 
 - name:  start app
-  command:  pm2 start main.js
-  args:
-    chdir: ~/backend/dist
+  command: |
+   args:
+      chdir: ~/backend/dist
   environment:
       ENVIRONMENT: production
       TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
@@ -90,3 +86,19 @@
       TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
       TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
       TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+
+
+
+       #   export  TYPEORM_CONNECTION =postgres
+  #   export  TYPEORM_MIGRATIONS_DIR =./src/migrations
+  #   export  TYPEORM_MIGRATIONS=./src/migrations/*.ts
+  #   export  TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts
+  #   export  TYPEORM_HOST=udapeople-db.cgkyxn12mkv9.us-east-1.rds.amazonaws.com
+  #   export  TYPEORM_PORT=5432
+  #   export  TYPEORM_USERNAME=postgres
+  #   export  TYPEORM_PASSWORD=mypassword
+  #   export  TYPEORM_DATABASE=postgres
+  #   pm2 start main.js
+  #   npm install
+  #   pm2 stop default
+  #   pm2 start npm -- start
