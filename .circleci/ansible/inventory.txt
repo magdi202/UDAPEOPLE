@@ -1,4 +1,6 @@
 [ubuntu]
+ec2-54-205-235-55.compute-1.amazonaws.com
+54.205.235.55
 ec2-3-95-217-6.compute-1.amazonaws.com
 3.95.217.6
 ec2-44-211-124-19.compute-1.amazonaws.com
