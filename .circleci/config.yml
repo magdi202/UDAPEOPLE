@@ -277,7 +277,7 @@ jobs:
            npm i
            npm install typescript@latest -g
            npm run build
-           npm install pm2 -g
+           npm install pm2@latest -g
            cd .. tar -C backend -czvf artifact.tar.gz .
            cp ./artifact.tar.gz .circleci/ansible/roles/deploy
            cd .circleci/ansible
