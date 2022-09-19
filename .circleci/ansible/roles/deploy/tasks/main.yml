@@ -46,6 +46,35 @@
     global: yes
     production: yes
     state: present
+
+- name: "Creates backend app directory"
+  file:
+    path: ~/backend
+    state: directory
+
+- name: "Copy compiled backend app"
+  copy:
+    src: dist.zip
+    dest: "~/backend/artifact.tar.gz"
+
+- name: "Unzip backend files"
+  unarchive:
+    src: "~/backend/artifact.tar.gz"
+    dest: "~/backend"
+    remote_src: yes
+
+- name: "Install dependencies for project"
+  shell: |
+    cd ~/backend
+    npm install
+
+- name: "Executing node"
+  shell: |
+    export
+    cd ~/backend
+    pm2 start main.js
+  register: execute_node
+
 - name:  start app
   command:  pm2 start main.js
   args:
@@ -60,4 +89,4 @@
       TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
       TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
       TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"    
+      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
