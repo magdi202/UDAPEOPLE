@@ -161,8 +161,10 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople 
-      - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      # Fail the job intentionally to simulate an error.
+      # Uncomment the line below if you want to fail the current step
+     # - run: return 1
+      #- destroy_environment
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -266,6 +268,17 @@ jobs:
   create_and_deploy_backend:
     docker:
       - image: amazon/aws-cli
+        environment:
+          NODE_ENV: "production"
+          VERSION: "1"
+          ENVIRONMENT: "production"
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
     steps:
        - checkout
        - add_ssh_keys:
@@ -282,25 +295,8 @@ jobs:
            echo "Contents  of the inventory.txt file is -------"
            cat inventory.txt
            ansible-playbook -i inventory.txt deploy-backend.yml
-       - run:
-          name:  start app
-          command:  pm2 start main.js
-          args:
-            chdir: ~/backend/dist
-          environment:
-           NODE_ENV: "production"
-           VERSION: "1"
-           ENVIRONMENT: "production"
-           TYPEORM_CONNECTION: $TYPEORM_CONNECTION
-           TYPEORM_HOST: $TYPEORM_HOST
-           TYPEORM_USERNAME: $TYPEORM_USERNAME
-           TYPEORM_PASSWORD: $TYPEORM_PASSWORD
-           TYPEORM_DATABASE: $TYPEORM_DATABASE
-           TYPEORM_PORT: $TYPEORM_PORT
-           TYPEORM_ENTITIES: $TYPEORM_ENTITIES   
-   
   backend_smoke_test:
-    docker: 
+    docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
