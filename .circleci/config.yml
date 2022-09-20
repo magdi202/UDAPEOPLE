@@ -290,6 +290,7 @@ jobs:
            yum install nodejs -y  
            yum install tar -y
            yum install gzip -y
+           yum install ansible -y
        - run:
           command: |
            cd backend
@@ -372,8 +373,7 @@ jobs:
             aws cloudformation deploy \
             --template-file cloudfront.yml \
             --stack-name InitialStack \
-            --parameter-overrides WorkflowID=udapeople-kk1j287dhjppmz898 \
-      # Here's where you will add some code to rollback on failure
+            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
 workflows:
   build_udapeople:
     jobs:
