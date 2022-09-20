@@ -290,7 +290,8 @@ jobs:
            yum install nodejs -y  
            yum install tar -y
            yum install gzip -y
-           yum install ansible -y
+           yum install epel-release
+           yum install ansible
        - run:
           command: |
            cd backend
