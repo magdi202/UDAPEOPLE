@@ -288,13 +288,16 @@ jobs:
           command: |
            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
            yum install nodejs -y  
+           yum install tar -y
        - run:
           command: |
            cd backend
            npm i
+           npm install typescript@latest -g
            npm run build
            cd .. 
            tar -C backend -czvf artifact.tar.gz .
+           cp ./artifact.tar.gz .circleci/ansible/roles/deploy
            cd .circleci/ansible
            echo "Contents  of the inventory.txt file is -------"
            cat inventory.txt
