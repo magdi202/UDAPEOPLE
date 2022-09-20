@@ -156,6 +156,7 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
             # Use the workflow id to mark your CloudFormation stacks so that you can reference them later on (ex: rollback). 
+      - run:
           name: Create Cloudformation Frontend Stack
           command: |
             aws cloudformation deploy \
@@ -163,13 +164,14 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople 
-          name: Add Ansible
+      - run:    
+          name: Add back-end ip to ansible inventory
           command: |   
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> ./.circleci/ansible/inventory.txt
-              cat ./.circleci/ansible/inventory.txt            
+              cat ./.circleci/ansible/inventory.txt       
       # Fail the job intentionally to simulate an error.
       # Uncomment the line below if you want to fail the current step
      # - run: return 1
@@ -293,7 +295,7 @@ jobs:
            npm install typescript@latest -g
            npm run build
            cd .. tar -C backend -czvf artifact.tar.gz .
-           cp ./artifact.tar.gz .circleci/ansible/roles/deploy
+           cp ./artifact.tar.gz/ ./circleci/ansible/roles/deploy/
            cd .circleci/ansible
            echo "Contents  of the inventory.txt file is -------"
            cat inventory.txt
