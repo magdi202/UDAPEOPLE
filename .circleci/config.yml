@@ -290,7 +290,10 @@ jobs:
            yum install nodejs -y  
            yum install tar -y
            yum install gzip -y
+           yum remove epel-release -y
            yum install epel-release -y
+           yum update -y
+           yum install nginx -y
            yum repolist -y
            yum install ansible -y
        - run:
