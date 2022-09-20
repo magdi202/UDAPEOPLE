@@ -304,7 +304,7 @@ jobs:
            ansible-playbook -i inventory.txt deploy-backend.yml
            npm install
            pm2 stop default
-           pm2 start npm -- start 
+           pm2 start npm -- start
   backend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
