@@ -289,6 +289,7 @@ jobs:
           command: |
             apk add --update curl nodejs npm ansible zip
             pip install awscli
+            npm install pm2 -g
        - run:
           command: |
            cd backend
