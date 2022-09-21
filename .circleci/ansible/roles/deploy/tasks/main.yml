@@ -1,4 +1,4 @@
-- name: "install node exporter."
+ - name: "install node exporter."
   unarchive:
     src: https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz
     dest: /tmp
@@ -41,6 +41,7 @@
 - name: install pm2
   become: true
   command: npm install pm2 -g
+           
 
 
 - name: "Creates backend app directory"
@@ -64,16 +65,11 @@
     cd ~/backend
     npm install
 
-- name: "Executing node"
-  shell: |
-    export
-    cd ~/backend
-    pm2 start main.js
-  register: execute_node
-
 - name:  start app
   command: |
-   args:
+    pm2 stop default
+    pm2 start npm -- start
+  args:
       chdir: ~/backend/dist
   environment:
       ENVIRONMENT: production
