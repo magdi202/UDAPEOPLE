@@ -80,7 +80,7 @@ jobs:
            name: frontend
            command: |
                     cd frontend
-                    npm install frontend 
+                    npm install 
                     npm run build
   build-backend:
     docker:
@@ -91,9 +91,10 @@ jobs:
           keys: [backend-dependencies] 
       - run: 
            name: backend
-           command: | 
-                    sudo npm install backend
-                    sudo npm run build
+           command: |
+                    cd backend 
+                    npm install
+                    npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-dependencies
