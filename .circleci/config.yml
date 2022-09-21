@@ -172,10 +172,8 @@ jobs:
               --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> ./.circleci/ansible/inventory.txt
               cat ./.circleci/ansible/inventory.txt       
-      # Fail the job intentionally to simulate an error.
-      # Uncomment the line below if you want to fail the current step
-     # - run: return 1
-      #- destroy_environment
+      - destroy_environment:
+           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -211,7 +209,8 @@ jobs:
           command: cd .circleci/ansible
                    ansible-playbook -i inventory.txt configure-server.yml
 
-
+      - destroy_environment:
+           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
@@ -275,7 +274,8 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-
+       - destroy_environment:
+           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   create_and_deploy_backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -318,7 +318,8 @@ jobs:
            echo "Contents  of the inventory.txt file is -------"
            cat inventory.txt
            ansible-playbook -i inventory.txt deploy-backend.yml
-           npm install
+       - destroy_environment:
+           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   backend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
