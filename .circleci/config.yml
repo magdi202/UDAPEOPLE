@@ -222,8 +222,9 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-                   cd .circleci/ansible
-                   ansible-playbook -i inventory.txt configure-server.yml
+                   cat ~/project/.circleci/ansible/inventory.txt
+                   export ANSIBLE_HOST_KEY_CHECKING=False
+                   ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
       - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   run-migrations:
