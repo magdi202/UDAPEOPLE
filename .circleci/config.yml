@@ -78,7 +78,8 @@ jobs:
           - build-frontend
       - run: 
            name: frontend
-           command: npm install frontend 
+           command: |
+                    npm install frontend 
                     npm run build
       - save_cache:
           key: build-frontend
@@ -93,7 +94,8 @@ jobs:
           keys: [backend-dependencies] 
       - run: 
            name: backend
-           command: sudo npm install backend
+           command: |
+                    sudo npm install backend
                     sudo npm run build
       - save_cache:
           paths: [backend/node_modules]
@@ -107,7 +109,8 @@ jobs:
           keys: [frontend-dependencies]
       - run: 
            name: frontend
-           command: npm install frontend test
+           command: |
+                    npm install frontend test
   test-backend:
     docker:
       - image: circleci/node:10.16.3
@@ -117,7 +120,8 @@ jobs:
           keys: [backend-dependencies]
       - run: 
            name: backend
-           command: npm install backend test
+           command: |
+                    npm install backend test
   scan-frontend:
     docker:
       - image: circleci/node:10.16.3
@@ -127,7 +131,8 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: 
            name: frontend
-           command: npm install
+           command: |
+                    npm install
                     npm audit fix
                     npm audit fix --force --audit-level=critical
                     npm audit --audit-level=critical
@@ -141,7 +146,8 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run: 
            name: backend
-           command: npm install
+           command: |
+                    npm install
   deploy-infrastructure: 
     docker:
       - image: amazon/aws-cli
@@ -207,10 +213,8 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-                   cat ~/project/.circleci/ansible/inventory.txt
-                   export ANSIBLE_HOST_KEY_CHECKING=False
-                   ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
-
+                   cd .circleci/ansible
+                   ansible-playbook -i inventory.txt configure-server.yml
       - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   run-migrations:
