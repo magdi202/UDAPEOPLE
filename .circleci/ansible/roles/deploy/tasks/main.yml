@@ -39,6 +39,7 @@
     update_cache: yes
 
 - name: install pm2
+  become: true
   command: npm install pm2 -g
 
 
