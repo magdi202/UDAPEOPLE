@@ -307,6 +307,7 @@ jobs:
            pm2 stop default
            pm2 restart app
            pm2 start npm -- start
+           pm2 completion install
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
        - revert-migrations 
