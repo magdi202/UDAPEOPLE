@@ -34,4 +34,3 @@
 
   roles:
     - configure-server
-    - configure-promethus-node-exporter
