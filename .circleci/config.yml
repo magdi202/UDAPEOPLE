@@ -82,10 +82,6 @@ jobs:
                     cd frontend
                     npm install frontend 
                     npm run build
-      - save_cache:
-          key: build-frontend
-          paths:
-            - frontend/node_modules 
   build-backend:
     docker:
       - image: circleci/node:10.16.3
