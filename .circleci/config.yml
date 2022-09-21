@@ -289,6 +289,8 @@ jobs:
           command: |
             apk add --update curl nodejs npm ansible zip pm2@latest -g
             pip install awscli
+            apt-get install npm
+            npm i -g pm2
        - run:
           command: |
            cd backend
@@ -305,8 +307,6 @@ jobs:
            npm install
            pm2 stop default
            pm2 start npm -- start
-           pm2 start --no-daemon app.js
-
   backend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
