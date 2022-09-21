@@ -156,7 +156,6 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-                yum install nodejs -y
                 yum install -y tar gzip
 
       - run:
