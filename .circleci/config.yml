@@ -172,9 +172,10 @@ jobs:
               --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text >> ./.circleci/ansible/inventory.txt
               cat ./.circleci/ansible/inventory.txt       
-      - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-       
+      # Fail the job intentionally to simulate an error.
+      # Uncomment the line below if you want to fail the current step
+     # - run: return 1
+      #- destroy_environment
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -274,9 +275,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-       - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-       - revert-migrations
+
   create_and_deploy_backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -320,10 +319,6 @@ jobs:
            cat inventory.txt
            ansible-playbook -i inventory.txt deploy-backend.yml
            npm install
-       - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-       - revert-migrations   
-
   backend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
@@ -350,10 +345,9 @@ jobs:
              return 0
              else
              return 1
-             fi 
-      - destroy_environment: 
-             workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-      - undo_migrations
+             fi
+           # - destroy_environment  
+             #BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
   frontend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
@@ -378,9 +372,7 @@ jobs:
            else
            return 1
            fi
-      - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-
+          # - destroy_environment  
 
   cloudfront-update:
     docker:
