@@ -308,9 +308,6 @@ jobs:
            pm2 restart app
            pm2 start npm -- start
            pm2 completion install
-       - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-       - revert-migrations 
   backend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
