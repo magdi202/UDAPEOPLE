@@ -154,6 +154,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install dependencies
+          command: |
+                yum install nodejs -y
+                yum install -y tar gzip curl software-properties-common
+
+      - run:
           name: Create Cloudformation Backend Stack
           command: |
             aws cloudformation deploy \
