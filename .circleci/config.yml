@@ -1,48 +1,42 @@
 version: 2.1
 #  Define the jobs we want to run for this project
 commands:
-  install_awscli:
-    description: Install aws cli v2
+  install_aws_cli:
+    description: Install aws cli on Circle ci base images.
+    #parameters:
     steps:
-      - run:
-          name: Install aws cli v2
+      - run: 
+          name: Install aws cli 
           command: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
-            ./aws/install  
-            
-  dependencies:
+            sudo ./aws/install
+  install_ansible:
+    description: Install ansible on Circle ci base images.
+    #parameters:
     steps:
-      - run:
-          name: Installing necessary packages
+      - run: 
+          name: Install Ansible 
           command: |
-            apt update
-            apt install -y tar gzip curl software-properties-common
-      - run:
-          name: Installing aws-cli
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            ./aws/install
-      - run:
-          name: Installing ansible
-          command: |
-            add-apt-repository --yes --update ppa:ansible/ansible
-            apt install ansible
-
+            sudo apt update
+            sudo apt install software-properties-common
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y 
   install_nodejs:
-    description: Install ansible v2
+    description: Install nodejs on Circle ci base images.
+    #parameters:
     steps:
-      - run:         
-          name: "install nodejs 14.20.1"
+      - run: 
+          name: Install nodejs
           command: |
-            curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -   
-            apt install -y nodejs
-
-  destroy_environment:
-    description: Destroy backend and frontend cloudformation stacks given a workflow ID.
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs
+            sudo npm install --global n 
+            sudo n 13.8.0
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      workflow_id:
+      workflow_id: 
         type: string
         default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
@@ -50,22 +44,27 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            echo "Destroying environment: <<parameters.workflow_id>> "
-            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
-            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
-    
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow_id >>
+            aws s3 rm s3://udapeople-<< parameters.workflow_id >> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id >>
+            
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      workflow_id: 
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}     
     steps:
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            cd ~/project/backend
-            if [[ -f "~/project/.circleci/outputs/db_migration_success" ]]; then
-              npm i
-              npm run migration:revert
+            SUCCESS=$(curl --insecure https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.workflow_id >>)
+            if(( $SUCCESS == 1 )); 
+            then
+             cd ~/project/backend
+             npm install
+             npm run migrations:revert
             fi
 jobs:
   build-frontend:
@@ -82,13 +81,17 @@ jobs:
                     cd frontend
                     npm install 
                     npm run build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: build-frontend
+
   build-backend:
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-dependencies] 
+          keys: [backend-build] 
       - run: 
            name: backend
            command: |
@@ -97,14 +100,14 @@ jobs:
                     npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: backend-dependencies
+          key: backend-build
   test-frontend:
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-dependencies]
+          keys: [frontend-test]
       - run: 
            name: frontend
            command: |
@@ -115,7 +118,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-dependencies]
+          keys: [backend-test]
       - run: 
            name: backend
            command: |
@@ -148,6 +151,9 @@ jobs:
            command: |
                     cd backend
                     npm install
+                    npm audit fix --audit-level=critical --force
+                    npm audit fix --audit-level=critical --force
+                    npm audit --audit-level=critical
   deploy-infrastructure: 
     docker:
       - image: amazon/aws-cli
@@ -192,17 +198,6 @@ jobs:
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
-        environment:
-          NODE_ENV: "production"
-          VERSION: "1"
-          ENVIRONMENT: "production"
-          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
-          TYPEORM_HOST: $TYPEORM_HOST
-          TYPEORM_USERNAME: $TYPEORM_USERNAME
-          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
-          TYPEORM_DATABASE: $TYPEORM_DATABASE
-          TYPEORM_PORT: $TYPEORM_PORT
-          TYPEORM_ENTITIES: $TYPEORM_ENTITIES
     steps:
       - checkout
       - add_ssh_keys:
@@ -223,6 +218,7 @@ jobs:
           name: Run Playbook and Configure server
           command: |
                    cd .circleci/ansible
+                   cat inventory.txt
                    ansible-playbook -i inventory.txt configure-server.yml
 
       # - destroy_environment:
@@ -418,6 +414,15 @@ jobs:
             # your code here
             export OldWorkflowID="the id here"
             export STACKS=[] #put the list of stacks here
+            export OldWorkflowID=$(aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text)
+          echo OldWorkflowID: "${OldWorkflowID}"
+            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
+       
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+            --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+          echo Stack names: "${STACKS[@]}"         
       - run:
           name: Remove old stacks and files
           command: |
@@ -456,7 +461,7 @@ workflows:
          requires: [create_and_deploy_backend]
       - frontend_smoke_test:
          requires: [create_and_deploy_frontend]
-     # - cloudfront-update:
-     #    requires: [smoke-test]
-     # - cleanup:
-     #    requires: [cloudfront-update]
+      - cloudfront-update:
+         requires: [smoke-test]
+      - cleanup:
+         requires: [cloudfront-update]
