@@ -25,11 +25,16 @@
     daemon_reload: yes
     name: node_exporter
     enabled: yes
-    
+
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
 - name: "upgrade packages."
   become: true
   apt:
-    upgrade: "yes"
+    upgrade: yes
 
 - name: "install dependencies."
   become: true
@@ -60,6 +65,11 @@
     dest: "~/backend"
     remote_src: yes
 
+- name: Copy index test page
+  template:
+    src: "files/index.js"
+    dest: "~/web/index.js"
+    
 - name: "Install dependencies for project"
   shell: |
     cd ~/backend
