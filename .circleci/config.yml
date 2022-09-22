@@ -224,8 +224,8 @@ jobs:
           name: Run Playbook and Configure server
           command: |
                    cat ~/project/.circleci/ansible/inventory.txt
-                   export ANSIBLE_HOST_KEY_CHECKING=False
-                   ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
+                   cd .circleci/ansible
+                   ansible-playbook main.yml -i inventory --private-key UADPeople.pem
                   
                   #  cd .circleci/ansible
                   #  ansible-playbook -i inventory.txt configure-server.yml
