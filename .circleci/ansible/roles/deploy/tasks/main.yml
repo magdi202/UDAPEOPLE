@@ -1,94 +1,28 @@
-- name: "install node exporter."
-  unarchive:
-    src: https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz
-    dest: /tmp
-    remote_src: yes
-
-- name: "move binary to /usr/local/bin."
-  become: true
-  copy:
-    src: /tmp/node_exporter-0.17.0.linux-amd64/node_exporter
-    dest: /usr/local/bin/node_exporter
-    remote_src: yes
-    mode: '0777'
-    
-- name: "add node exporter configuration."
-  become: true
-  copy:
-    src: node_exporter.service
-    dest: /etc/systemd/system/
-
-- name: "enable node_exporter service"
-  become: true
-  systemd:
-    state: restarted
-    daemon_reload: yes
-    name: node_exporter
-    enabled: yes
-
-- name: "update apt packages."
-  become: yes
-  apt:
-    update_cache: yes
-
-- name: "upgrade packages."
-  become: true
-  apt:
-    upgrade: yes
-
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
-
-- name: install pm2
-  become: true
-  command: npm install pm2 -g
-           
-
-
-- name: "Creates backend app directory"
+---
+- name: "Create Backend app directory"
   file:
-    path: ~/backend
+    path: ~/backend-app
     state: directory
-
-- name: "Copy compiled backend app"
-  copy:
-    src: dist.zip
-    dest: "~/backend/artifact.tar.gz"
-
-- name: "Unzip backend files"
+- name: "Unarchive backend files"
   unarchive:
-    src: "~/backend/artifact.tar.gz"
-    dest: "~/backend"
-    remote_src: yes
-
-- name: Copy index test page
-  template:
-    src: "files/index.js"
-    dest: "~/web/index.js"
-    
-- name: "Install dependencies for project"
+    src: artifact.tar.gz
+    dest: ~/backend-app
+- name: "Installing Dependencies"
   shell: |
-    cd ~/backend
-    npm install
-
-- name:  start app
-  command: |
+    cd ~/backend-app
+    npm i
+- name: "RUN app with pm2"
+  shell: |
+    cd ~/backend-app/dist
     pm2 stop default
-    pm2 start npm -- start
-  args:
-      chdir: ~/backend/dist
-  environment:
-      ENVIRONMENT: production
-      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-      TYPEORM_MIGRATIONS_DIR: "./migrations"
-      TYPEORM_MIGRATIONS: "./migrations/*.js"
-      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+    pm2 start main.js
+  register: execute_node
+
+- name:  "print status of backend app"
+  debug:
+    msg: "{{execute_node.stdout_lines}}"
+
+- name : "run pm2 as a service"
+  become: true
+  shell: |
+    env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
