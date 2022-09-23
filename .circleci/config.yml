@@ -312,7 +312,7 @@ jobs:
       - image: cimg/base:stable
     steps:
        - checkout
-       - install_awscli
+       - install_aws_cli
        - install_nodejs
        - install_ansible
        - add_ssh_keys:
@@ -349,7 +349,7 @@ jobs:
       - image: pcimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - install_aws_cli
       - install_nodejs
       - attach_workspace:
           at: ~/
@@ -393,7 +393,7 @@ jobs:
            else
            return 1
            fi
-        - destroy_environment:
+      - destroy_environment:
             workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"    
 
 
