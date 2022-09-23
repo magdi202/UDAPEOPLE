@@ -216,7 +216,8 @@ jobs:
                                 
       - run:
           name: Run Playbook and Configure server
-          command: cd .circleci/ansible
+          command: |
+                   cd .circleci/ansible
                    cat inventory.txt
                    ansible-playbook -i inventory.txt configure-server.yml
       # - destroy_environment:
@@ -414,8 +415,8 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
             --stack-name InitialStack
-      - destroy-environment
-      - revert-migrations    
+      - destroy_environment
+      - revert_migrations    
 
   cleanup:
     docker:
@@ -471,7 +472,7 @@ workflows:
          requires: [create_and_deploy_backend]
       - frontend_smoke_test:
          requires: [create_and_deploy_frontend]
-      - cloudfront-update:
-         requires: [backend_smoke_test, frontend_smoke_test]
-      - cleanup:
-         requires: [cloudfront-update]
+      # - cloudfront-update:
+      #    requires: [backend_smoke_test, frontend_smoke_test]
+      # - cleanup:
+      #    requires: [cloudfront-update]
