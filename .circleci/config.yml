@@ -221,7 +221,7 @@ jobs:
              apk add --update ansible
              apk add curl
              apk add openssh-client
-             pip3 install awscli
+            #  pip3 install awscli
                                 
       - run:
           name: Run Playbook and Configure server
