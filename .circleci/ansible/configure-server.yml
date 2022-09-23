@@ -1,9 +1,11 @@
 ---
- 
+
 - name: "configuration play." 
   hosts: web
   remote_user: ubuntu
-  become: true 
+  become: true
+  become_method: sudo
+  become_user: root
   gather_facts: false
   vars:
     ansible_python_interpreter: /usr/bin/python3
@@ -31,7 +33,7 @@
       apt: 
         name: python3.8
         state: present
-
+    - setup:
   roles:
     - configure-server
     - configure-prometheus-node-exporter
