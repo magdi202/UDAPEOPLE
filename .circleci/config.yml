@@ -74,7 +74,7 @@ jobs:
       - checkout
       - restore_cache:
           keys: 
-          - build-frontend
+          - frontend-dependencies
       - run: 
            name: frontend
            command: |
@@ -83,7 +83,7 @@ jobs:
                     npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: build-frontend
+          key: frontend-dependencies
 
   build-backend:
     docker:
@@ -91,7 +91,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build] 
+          keys: [backend-dependencies] 
       - run: 
            name: backend
            command: |
@@ -100,14 +100,14 @@ jobs:
                     npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: backend-build
+          key: backend-dependencies
   test-frontend:
     docker:
       - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-test]
+          keys: [frontend-dependencies]
       - run: 
            name: frontend
            command: |
@@ -120,7 +120,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-test]
+          keys: [backend-dependencies]
       - run: 
            name: backend
            command: |
@@ -272,7 +272,7 @@ jobs:
        - checkout
        - restore_cache:
           keys:
-            - build-frontend
+            - frontend-dependencies
        - run:
           name: Install dependencies
           command: |
@@ -309,80 +309,66 @@ jobs:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   create_and_deploy_backend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/base:stable
     steps:
        - checkout
+       - install_awscli
+       - install_nodejs
+       - install_ansible
        - add_ssh_keys:
-            # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]    
-       
+       - restore_cache:
+          keys: [backend-dependencies]
        - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm ansible zip
-            apk add tar gzip
-            apk add zip
+            cd backend
+            npm install
        - run:
-          name: install awscli
+          name: backend Package
           command: |
-            apk add --no-cache \
-            python3 \
-            py3-pip \
-            && pip3 install --upgrade pip \
-            && pip3 install \
-            awscli \
-            && rm -rf /var/cache/apk/*
+            cd backend
+            npm run build 
+            tar -czvf artifact.tar.gz dist/* package*
+            cd ..
+            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
        - run:
-          name: install node
+          name: backend Deploy
           command: |
-            apk add --update nodejs npm
-            apk add --update npm   
-       - run:
-          command: |
-           cd backend
-           npm i
-           npm install typescript@latest -g
-           npm run build
-           cd .. 
-           tar -C backend -czvf artifact.tar.gz .
-           cp ./artifact.tar.gz .circleci/ansible/roles/deploy
-           cd .circleci/ansible
-           echo "Contents  of the inventory.txt file is -------"
-           cat inventory.txt
-           ansible-playbook -i inventory.txt deploy-backend.yml
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   backend_smoke_test:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: pcimg/base:stable
     steps:
       - checkout
+      - install_awscli
+      - install_nodejs
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-                apk add --update curl
-                pip install awscli
                 
       - run:
           name: backend smoke test
           command: |
-             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDnsName' \
-             --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-             --output text)
-             export API_URL="http://${BACKEND_IP}:3030"
-             echo "API_URL=${API_URL}"
-             if curl "${API_URL}/api/status" | grep "ok"
-             then
-             return 0
-             else
-             return 1
-             fi
-      #  - destroy_environment:
-      #      workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-      #      # - destroy_environment  
-             #BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+             --query 'Reservations[*].Instances[*].PublicIpAddress' \
+             --output text )
+            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+            echo API_URL
+            if curl -s $API_URL/api/status |grep "ok"
+            then 
+              exit 0
+            else 
+              exit 1 
+            fi
   frontend_smoke_test:
     docker:
       - image: python:3.7-alpine3.11
@@ -407,9 +393,8 @@ jobs:
            else
            return 1
            fi
-      #  - destroy_environment:
-      #      workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"    
-
+        - destroy_environment:
+            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"    
 
 
   cloudfront-update:
