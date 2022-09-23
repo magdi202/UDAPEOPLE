@@ -214,14 +214,14 @@ jobs:
 
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: | 
-             python3 -m pip install --user argcomplete
-             apk add --update ansible
-             apk add curl
-             apk add openssh-client
-            #  pip3 install awscli
+      # - run:
+      #     name: Install dependencies
+      #     command: | 
+      #        python3 -m pip install --user argcomplete
+      #        apk add --update ansible
+      #        apk add curl
+      #        apk add openssh-client
+      #       #  pip3 install awscli
                                 
       - run:
           name: Run Playbook and Configure server
