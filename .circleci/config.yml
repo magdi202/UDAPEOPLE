@@ -69,7 +69,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -87,7 +87,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -103,7 +103,7 @@ jobs:
           key: backend-build
   test-frontend:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -111,10 +111,12 @@ jobs:
       - run: 
            name: frontend
            command: |
-                    npm install frontend test
+                     cd frontend
+                     npm install
+                     npm test
   test-backend:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -122,10 +124,13 @@ jobs:
       - run: 
            name: backend
            command: |
-                    npm install backend test
+                    cd backend
+                    npm install
+                    npm test
+
   scan-frontend:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -141,7 +146,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -156,9 +161,10 @@ jobs:
                     npm audit --audit-level=critical
   deploy-infrastructure: 
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_awscli
       - run:
           name: Install dependencies
           command: |
@@ -197,11 +203,12 @@ jobs:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/base:stable
     steps:
       - checkout
+      - install_ansible
+      - install_awscli
       - add_ssh_keys:
-            # You can get this ID in the section where you registered the SSH Key
             fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]
 
       - attach_workspace:
@@ -221,8 +228,8 @@ jobs:
                    cd .circleci/ansible
                    cat inventory.txt
                    ansible-playbook -i inventory.txt configure-server.yml
-      # - destroy_environment:
-      #      workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - destroy_environment:
+           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
