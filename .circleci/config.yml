@@ -164,7 +164,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - install_aws_cli
       - run:
           name: Install dependencies
           command: |
@@ -207,7 +207,7 @@ jobs:
     steps:
       - checkout
       - install_ansible
-      - install_awscli
+      - install_aws_cli
       - add_ssh_keys:
             fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]
 
