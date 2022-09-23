@@ -152,7 +152,6 @@ jobs:
                     cd backend
                     npm install
                     npm audit fix --audit-level=critical --force
-                    npm audit fix --audit-level=critical --force
                     npm audit --audit-level=critical
   deploy-infrastructure: 
     docker:
@@ -202,7 +201,8 @@ jobs:
       - checkout
       - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["91:cb:38:2f:ad:39:14:3d:f3:47:56:92:e5:e6:1c:59"]
+            fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]
+
       - attach_workspace:
           at: ~/
       - run:
@@ -294,7 +294,8 @@ jobs:
        - checkout
        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-            fingerprints: ["91:cb:38:2f:ad:39:14:3d:f3:47:56:92:e5:e6:1c:59"]    
+            fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]    
+       
        - run:
           name: Install dependencies
           command: |
