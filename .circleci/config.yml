@@ -310,10 +310,7 @@ jobs:
        - run:
           name: backend Deploy
           command: |
-            
-            cd .circleci/ansible
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+
           environment:
               - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
               - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
@@ -323,6 +320,10 @@ jobs:
               - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
               - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
               - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
+             
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml 
 
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
