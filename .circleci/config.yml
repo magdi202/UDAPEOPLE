@@ -382,9 +382,9 @@ jobs:
           command: |
            aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
-            --stack-name InitialStack \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
-            --stack-name InitialStack
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy_environment
       - revert_migrations   
 
@@ -401,7 +401,7 @@ jobs:
            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
             --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"  
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/UySpijuY9XeR6J1JxuoUeu/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/9PJVEpThjm488ZwD6jmyWe/old_workflow_id)
             echo OldWorkflowID: "${OldWorkflowID}"
             # export STACKS=[] #put the list of stacks here
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
@@ -412,37 +412,32 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
 workflows:
-   build_udapeople:
-     jobs:
-  #     - build-frontend
-  #     - build-backend
-  #     - test-frontend:
-  #        requires: [build-frontend]
-  #     - test-backend:
-  #        requires: [build-backend] 
-  #     - scan-frontend:
-  #        requires: [build-frontend]
-  #     - scan-backend:
-  #        requires: [build-backend] 
-  #     - deploy-infrastructure:
-  #        requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-  #        filters:
-  #          branches:
-  #            only: [master]
-  #     - configure-infrastructure:
-  #        requires: [deploy-infrastructure]
-  #     - run-migrations:
-  #        requires: [configure-infrastructure] 
-  #     - create_and_deploy_frontend:
-  #        requires: [run-migrations]
-  #     - deploy_backend:
-  #        requires: [run-migrations]
-  #     - smoke_test: 
-  #        requires: [deploy_backend, create_and_deploy_frontend]
-      - cloudfront_update
-         # requires: [smoke_test]
-      - cleanup:
-          requires: [cloudfront_update]
-          filters:
-            branches:
-              only: [master]
+  build_udapeople:
+    jobs:
+      - build-frontend
+      - build-backend
+      - test-frontend:
+         requires: [build-frontend]
+      - test-backend:
+         requires: [build-backend] 
+      - scan-frontend:
+         requires: [build-frontend]
+      - scan-backend:
+         requires: [build-backend] 
+      - deploy-infrastructure:
+         requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+         filters:
+           branches:
+             only: [master]
+      - configure-infrastructure:
+         requires: [deploy-infrastructure]
+      - run-migrations:
+         requires: [configure-infrastructure] 
+      - create_and_deploy_frontend:
+         requires: [run-migrations]
+      - deploy_backend:
+         requires: [run-migrations]
+      - smoke_test: 
+         requires: [deploy_backend, create_and_deploy_frontend]
+      - cloudfront_update:
+         requires: [smoke_test]
