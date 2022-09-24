@@ -335,19 +335,19 @@ jobs:
        - run:
           name: backend Deploy
           command: |
-            export TYPEORM_MIGRATIONS_DIR=./migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
-            export TYPEORM_MIGRATIONS=./migrations/*.ts
-            export TYPEORM_CONNECTION =postgres
-            export TYPEORM_HOST=udapeople-db.cgkyxn12mkv9.us-east-1.rds.amazonaws.com
-            export TYPEORM_PORT=5432
-            export TYPEORM_USERNAME=postgres
-            export TYPEORM_PASSWORD=mypassword
-            export TYPEORM_DATABASE=postgres
-
+            
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
+          environment:
+              - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
+              - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
+              - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
+              - TYPEORM_PORT: 5432
+              - TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}"
+              - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
+              - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
+              - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
 
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
