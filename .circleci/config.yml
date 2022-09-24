@@ -470,7 +470,7 @@ workflows:
       - create_and_deploy_backend:
          requires: [run-migrations]
       - smoke_test: 
-         requires: [deploy-backend, deploy-frontend]
+         requires: [create_and_deploy_backend, create_and_deploy_frontend]
       # - cloudfront-update:
       #    requires: [backend_smoke_test, frontend_smoke_test]
       # - cleanup:
