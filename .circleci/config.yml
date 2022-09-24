@@ -68,7 +68,6 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-<<<<<<< HEAD
       - restore_cache:
           keys: 
           - frontend-dependencies
@@ -412,18 +411,6 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
-=======
-      - install_aws_cli
-      - install_nodejs
-      - run:
-          name: cloudfront distribution 
-          command: |
-           cd .circleci/files
-           aws cloudformation deploy \
-             --template-file cloudfront.yml \
-             --stack-name InitialStack\
-             --parameter-overrides WorkflowID=udapeople-tt1j888madbein999
->>>>>>> ec081b3a86841502beee41e1edb2445d405db2b2
 workflows:
   build_udapeople:
     jobs:
@@ -452,10 +439,10 @@ workflows:
         requires: [run-migrations]
      - smoke_test: 
         requires: [deploy_backend, create_and_deploy_frontend]
-     - cloudfront_update
-      requires: [smoke_test]
+     - cloudfront_update:
+        requires: [smoke_test]
      - cleanup:
-         requires: [cloudfront_update]
-         filters:
-           branches:
-             only: [master]
+        requires: [cloudfront_update]
+        filters:
+            branches:
+              only: [master]
