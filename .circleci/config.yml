@@ -440,9 +440,9 @@ workflows:
    #   - smoke_test: 
    #      requires: [deploy_backend, create_and_deploy_frontend]
    #   - cloudfront_update
-   #      requires: [smoke_test]
-   #   - cleanup:
-   #      requires: [cloudfront_update]
+  #     requires: [smoke_test]
+  #    - cleanup:
+   #       requires: [cloudfront_update]
    #       filters:
    #         branches:
    #           only: [master]
