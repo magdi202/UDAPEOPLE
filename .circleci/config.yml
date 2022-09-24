@@ -470,10 +470,10 @@ workflows:
          requires: [run-migrations]
       - smoke_test: 
          requires: [create_and_deploy_backend, create_and_deploy_frontend]
-      # - cloudfront-update:
-      #    requires: [smoke_test]
-      # - cleanup:
-      #    requires: [cloudfront-update]
-          #  filters:
-          #   branches:
-          #     only: [master]  
+      - cloudfront-update:
+         requires: [smoke_test]
+      - cleanup:
+         requires: [cloudfront-update]
+           filters:
+            branches:
+              only: [master]  
