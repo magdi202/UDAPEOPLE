@@ -136,7 +136,6 @@ jobs:
            command: |
                     cd frontend
                     npm install
-                    npm audit fix
                     npm audit fix --force --audit-level=critical
                     npm audit --audit-level=critical
 
@@ -238,7 +237,9 @@ jobs:
           command: |
             if grep -q "has been executed successfully" ~/project/backend/migrations_dump.txt
             then 
-              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+              curl https://kvdb.io/9PJVEpThjm488ZwD6jmyWe/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1' 
+              else
+              curl https://kvdb.io/9PJVEpThjm488ZwD6jmyWe/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '999'
             fi 
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
