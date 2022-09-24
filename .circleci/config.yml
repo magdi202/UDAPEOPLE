@@ -68,11 +68,16 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-        cd .circleci/files
-        aws cloudformation deploy \
-         --template-file cloudfront.yml \
-         --stack-name InitialStack\
-         --parameter-overrides WorkflowID=udapeople-tt1j888madbein999
+      - install_aws_cli
+      - install_nodejs
+      - run:
+          name: cloudfront distribution 
+          command: |
+           cd .circleci/files
+           aws cloudformation deploy \
+             --template-file cloudfront.yml \
+             --stack-name InitialStack\
+             --parameter-overrides WorkflowID=udapeople-tt1j888madbein999
 workflows:
   build_udapeople:
     jobs:
