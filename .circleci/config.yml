@@ -309,9 +309,12 @@ jobs:
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
        - run:
           name: backend Deploy
-          command: |
+          command: |   
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml 
 
-           environment:
+          environment:
               - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
               - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
               - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
@@ -320,10 +323,6 @@ jobs:
               - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
               - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
               - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
-             
-            cd .circleci/ansible
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml 
 
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
