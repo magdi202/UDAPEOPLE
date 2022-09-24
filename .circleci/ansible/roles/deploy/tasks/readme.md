@@ -1,2 +1,2 @@
-## Deployment playbook goes here.
+## Deployment files goes here.
 
