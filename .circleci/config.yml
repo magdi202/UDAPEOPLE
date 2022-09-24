@@ -282,50 +282,44 @@ jobs:
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-  create_and_deploy_backend:
+  deploy_backend:
     docker:
       - image: cimg/base:stable
     steps:
-       - checkout
-       - install_aws_cli
-       - install_nodejs
-       - install_ansible
-       - add_ssh_keys:
-            fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]    
-       - restore_cache:
-          keys: [backend-dependencies]
-       - run:
+      - checkout
+      - install_aws_cli
+      - install_nodejs
+      - install_ansible
+      - add_ssh_keys:
+          fingerprints: ["76:dc:a0:74:b4:c0:b3:24:2f:75:f8:a9:0a:ce:86:42"]
+      - attach_workspace:
+          at: ~/
+      - restore_cache:
+          keys: [backend-deps]
+      - run:
           name: Install dependencies
           command: |
             cd backend
             npm install
-       - run:
-          name: backend Package
+      - run:
+          name: Package backend
           command: |
             cd backend
             npm run build 
             tar -czvf artifact.tar.gz dist/* package*
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
-       - run:
-          name: backend Deploy
-          command: |   
+      - run:
+          name: Deploy backend
+          command: |
+            export TYPEORM_MIGRATIONS_DIR=./migrations
+            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+            export TYPEORM_MIGRATIONS=./migrations/*.ts
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml 
-
-          environment:
-              - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"  
-              - TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
-              - TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
-              - TYPEORM_PORT: 5432
-              - TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}"
-              - TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
-              - TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
-              - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
-
-       - destroy_environment:
-           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - destroy_environment
+      - revert_migrations
   smoke_test:
     docker:
       - image: cimg/base:stable
@@ -441,10 +435,10 @@ workflows:
          requires: [configure-infrastructure] 
       - create_and_deploy_frontend:
          requires: [run-migrations]
-      - create_and_deploy_backend:
+      - deploy_backend:
          requires: [run-migrations]
       - smoke_test: 
-         requires: [create_and_deploy_backend, create_and_deploy_frontend]
+         requires: [deploy_backend, create_and_deploy_frontend]
       - cloudfront_update:
           requires: [smoke_test]
       - cleanup:
