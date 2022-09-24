@@ -392,7 +392,7 @@ jobs:
             workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"    
       - revert_migrations
 
-  cloudfront-update:
+  cloudfront_update:
     docker:
       - image: cimg/base:stable
     steps:
@@ -470,10 +470,10 @@ workflows:
          requires: [run-migrations]
       - smoke_test: 
          requires: [create_and_deploy_backend, create_and_deploy_frontend]
-      - cloudfront-update:
+      - cloudfront_update:
          requires: [smoke_test]
       - cleanup:
-         requires: [cloudfront-update]
+         requires: [cloudfront_update]
            filters:
             branches:
               only: [master]  
