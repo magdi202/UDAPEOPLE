@@ -397,7 +397,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - install_aws_cli
       - install_nodejs
       - run:
           name: get old workflow id 
@@ -416,15 +416,15 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
             --stack-name InitialStack
-      - destroy-environment
-      - revert-migrations   
+      - destroy_environment
+      - revert_migrations   
 
   cleanup:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - install_aws_cli
       - install_nodejs
       - run:
           name: Remove old stacks and files 
@@ -471,9 +471,9 @@ workflows:
       - smoke_test: 
          requires: [create_and_deploy_backend, create_and_deploy_frontend]
       - cloudfront_update:
-         requires: [smoke_test]
+          requires: [smoke_test]
       - cleanup:
-         requires: [cloudfront_update]
-           filters:
+          requires: [cloudfront_update]
+          filters:
             branches:
-              only: [master]  
+              only: [master]
