@@ -351,7 +351,7 @@ jobs:
 
        - destroy_environment:
            workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-  backend_smoke_test:
+  smoke_test:
     docker:
       - image: cimg/base:stable
     steps:
@@ -469,10 +469,8 @@ workflows:
          requires: [run-migrations]
       - create_and_deploy_backend:
          requires: [run-migrations]
-      - backend_smoke_test: 
+      - smoke_test: 
          requires: [create_and_deploy_backend]
-      - frontend_smoke_test:
-         requires: [create_and_deploy_frontend]
       # - cloudfront-update:
       #    requires: [backend_smoke_test, frontend_smoke_test]
       # - cleanup:
