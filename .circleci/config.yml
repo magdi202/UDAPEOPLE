@@ -105,7 +105,7 @@ jobs:
       - restore_cache:
           keys: [frontend-dependencies]
       - run: 
-           name: frontend
+           name: frontend Test
            command: |
                      cd frontend
                      npm install
@@ -118,7 +118,7 @@ jobs:
       - restore_cache:
           keys: [backend-dependencies]
       - run: 
-           name: backend
+           name: backend Test
            command: |
                     cd backend
                     npm install
